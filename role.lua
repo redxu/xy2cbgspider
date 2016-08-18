@@ -85,7 +85,7 @@ local function _KFSearchRole( page, search )
 		return nil,-1
 	end
 
-	DumpFile("./body.txt", body)
+	DumpFile("./body_role.txt", body)
 
 	return body,0
 end
@@ -182,10 +182,11 @@ local function ShowRoleInfo( role )
 		desc = desc .. "\n"		
 	end
 
-	desc = desc .. string.format("http://xy2.cbg.163.com/cgi-bin/equipquery.py?act=overall_search_show_detail&equip_id=" .. role.equipid.. "&serverid=" .. role.serverid .. "\n\n")
+	desc = desc .. string.format("http://xy2.cbg.163.com/cgi-bin/equipquery.py?act=overall_search_show_detail&equip_id=" ..
+								 role.equipid.. "&serverid=" .. role.serverid .. "\n\n")
 	
 	--print(desc)
-	Log("./role.txt", desc)
+	Log("./result_role.txt", desc)
 end
 
 --[[
@@ -338,9 +339,10 @@ function KFSearchRole( search )
 			print("Searching page " .. page .. " Err! " .. err)
 			return -1
 		else
-			print("Searching page " .. page)
+			print("Searching page " .. page .. "/" .. totalpage)
 			_,totalpage = ParseRole(body)
 			page = page+1
+			Sleep(2.5)
 		end
 	until(page > totalpage)
 

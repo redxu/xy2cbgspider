@@ -1,3 +1,4 @@
+local socket = require("socket")
 
 --[[
 保存文件
@@ -25,4 +26,11 @@ function Log( filename, body )
 	local file = io.open(filename, "a")
 	file:write(body)
 	file:close()
+end
+
+--[[
+休眠
+--]]
+function Sleep( n )
+	socket.select(nil, nil, n)
 end
