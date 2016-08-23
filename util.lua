@@ -34,3 +34,14 @@ end
 function Sleep( n )
 	socket.select(nil, nil, n)
 end
+
+--[[
+计算表中元素个数
+--]]
+function GetTableItemCount( tb )
+	local count = 0
+	for _,_ in pairs(tb) do
+		count = count+1
+	end
+	return count
+end

@@ -115,7 +115,7 @@ local function per_2_num( percent )
 end
 
 local function ShowRoleInfo( role )
-	local desc = string.format("role: %s nickname: %s price: %.2f\n", role.role, role.seller_nickname, role.price)
+	local desc = string.format("角色: %s %s 价格: %.2f\n", role.role, role.seller_nickname, role.price)
 	desc = desc .. string.format("服务器: %s 等级: %d pass_fair_show: %s\n", role.server_name, role.iGrade, role.pass_fair_show)
 	--坐骑 飞行器
 	desc = desc .. string.format("满坐骑数: %d 飞行器等级: %d\n", role.full_exp_rider_num, role.flyfabaolv)
@@ -158,7 +158,10 @@ local function ShowRoleInfo( role )
 	--小孩属性
 	for i=1,role.iBabyCount,1
 	do
-		desc = desc .. string.format("baby%d: 亲密/孝心: %d/%d 结局: %s\n", i, role.babys[i].iQinmi, role.babys[i].iXiaoxin, role.babys[i].cEnd)
+		desc = desc .. string.format("小孩%d: 亲密/孝心: %d/%d 养育金: %d 结局: %s\n", i, role.babys[i].iQinmi, role.babys[i].iXiaoxin, role.babys[i].iMoney, role.babys[i].cEnd)
+		if role.babys[i].cEnd ~= "" then
+			desc = desc .. string.format("-----: %s\n", table.concat(role.babys[i].QianghuaList, "\n-----: "))
+		end
 	end
 	if role.shenbing ~= "" then
 		desc = desc .. string.format("神兵: %s\n", role.shenbing)
@@ -181,6 +184,8 @@ local function ShowRoleInfo( role )
 		end
 		desc = desc .. "\n"		
 	end
+	--召唤兽
+	desc = desc .. string.format("召唤兽数: %d 装备数: %d 物品栏: %d\n", #role.SummonList, GetTableItemCount(role.mpEquip), #role.ItemList)
 
 	desc = desc .. string.format("http://xy2.cbg.163.com/cgi-bin/equipquery.py?act=overall_search_show_detail&equip_id=" ..
 								 role.equipid.. "&serverid=" .. role.serverid .. "\n\n")
@@ -242,7 +247,6 @@ function ParseRole( body )
 		role.pass_fair_show = value["pass_fair_show"]
 		role.price = value["price"]
 		local large = lpc_2_js(value["large_equip_desc"])
-		DumpFile("large.txt", large)
 		role.detail = cjson.decode(large)
 		--功绩
 		role.iAchievement = role.detail["iAchievement"]
@@ -275,6 +279,11 @@ function ParseRole( body )
 			role.babys[i].iMoney = role.detail["BabyList"][i]["iMoney"]
 			--结局
 			role.babys[i].cEnd = role.detail["BabyList"][i]["cEnd"]
+			--强化列表
+			role.babys[i].QianghuaList = {}
+			for _,v in pairs(role.detail["BabyList"][i]["QianghuaList"]) do
+				role.babys[i].QianghuaList[#role.babys[i].QianghuaList+1] = v["desc"] .. "[" .. v["level"] .. "]"
+			end
 		end
 		--收录套装
 		role.suit = {}
@@ -319,8 +328,15 @@ function ParseRole( body )
 			role.mpRei = role.detail["mpRei2"]["1"]
 			role.mpRei2 = role.detail["mpRei2"]["2"]
 		end
+		--召唤兽
+		role.SummonList = role.detail["SummonList"]
+		--身上装备
+		role.mpEquip = role.detail["mpEquip"]
+		--物品栏
+		role.ItemList = role.detail["ItemList"]
 
 		if SearchRoleFilter(role) == true then
+			DumpFile("./large.txt", large)
 			array[#array+1] = role
 			ShowRoleInfo(role)
 		end
