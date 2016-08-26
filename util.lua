@@ -10,6 +10,15 @@ function DumpFile( filename, body )
 end
 
 --[[
+保存二进制文件
+--]]
+function DumpBinFile( filename, bin )
+	local file = io.open(filename, "wb")
+	file:write(bin)
+	file:close()
+end
+
+--[[
 读取文件
 --]]
 function ReadFile( filename )

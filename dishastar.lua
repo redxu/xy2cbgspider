@@ -26,10 +26,37 @@ local _STAR_SEARCH = {
 --]]
 local _SHENTONG_NAME_TABLE = {}
 _SHENTONG_NAME_TABLE[12] = "强风"
+_SHENTONG_NAME_TABLE[13] = "强水"
+_SHENTONG_NAME_TABLE[14] = "强雷"
+_SHENTONG_NAME_TABLE[15] = "强火"
+_SHENTONG_NAME_TABLE[19] = "忽视抗冰"
+_SHENTONG_NAME_TABLE[20] = "强冰"
+_SHENTONG_NAME_TABLE[21] = "忽视抗混"
+_SHENTONG_NAME_TABLE[25] = "忽视抗雷"
+_SHENTONG_NAME_TABLE[26] = "忽视抗水"
 _SHENTONG_NAME_TABLE[27] = "忽视抗风"
+_SHENTONG_NAME_TABLE[28] = "忽视抗火"
+_SHENTONG_NAME_TABLE[30] = "强鬼火"
+_SHENTONG_NAME_TABLE[31] = "强三尸"
+_SHENTONG_NAME_TABLE[32] = "强力克火"
+_SHENTONG_NAME_TABLE[33] = "强力克水"
+_SHENTONG_NAME_TABLE[35] = "强力克木"
+_SHENTONG_NAME_TABLE[36] = "强力克金"
 _SHENTONG_NAME_TABLE[38] = "加强震慑"
+_SHENTONG_NAME_TABLE[42] = "四抗上限"
 _SHENTONG_NAME_TABLE[47] = "忽视震慑"
+_SHENTONG_NAME_TABLE[50] = "忽视抗鬼火"
+_SHENTONG_NAME_TABLE[57] = "水狂暴程度"
+_SHENTONG_NAME_TABLE[58] = "雷狂暴程度"
+_SHENTONG_NAME_TABLE[59] = "火狂暴程度"
+_SHENTONG_NAME_TABLE[60] = "雷狂暴"
+_SHENTONG_NAME_TABLE[61] = "火狂暴"
+_SHENTONG_NAME_TABLE[62] = "风狂暴"
+_SHENTONG_NAME_TABLE[63] = "水狂暴"
+_SHENTONG_NAME_TABLE[64] = "鬼火狂暴几率"
+_SHENTONG_NAME_TABLE[65] = "鬼火狂暴程度"
 _SHENTONG_NAME_TABLE[66] = "无属性"
+_SHENTONG_NAME_TABLE[67] = "三尸狂暴几率"
 _SHENTONG_NAME_TABLE[69] = "三尸回血程度"
 
 
@@ -107,7 +134,7 @@ end
 属性过滤
 --]]
 local function SearchStarFilter( star )
---[[
+----[[
 	--查找双忽视抽
 	for _,v in pairs(star.shentong) do
 		if v ~= 47 then
@@ -119,7 +146,8 @@ local function SearchStarFilter( star )
 	if count ~= 2 then
 		return false
 	end
---]]
+----]]
+--[[
 	--查找忽视/强
 	if V_In_Table(star.shentong, 12) == false then
 		return false
@@ -127,6 +155,7 @@ local function SearchStarFilter( star )
 	if V_In_Table(star.shentong, 27) == false then
 		return false
 	end
+--]]
 
 	return true
 end
