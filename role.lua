@@ -188,8 +188,13 @@ local function ShowRoleInfo( role )
 	desc = desc .. string.format("召唤兽数: %d 装备数: %d 物品栏: %d\n", #role.SummonList, GetTableItemCount(role.mpEquip), #role.ItemList)
 
 	desc = desc .. string.format("http://xy2.cbg.163.com/cgi-bin/equipquery.py?act=overall_search_show_detail&equip_id=" ..
-								 role.equipid.. "&serverid=" .. role.serverid .. "\n\n")
+								 role.equipid.. "&serverid=" .. role.serverid .. "\n")
+	--时装
+	if role.mpFashion ~= nil then
+		desc = desc .. string.format("时装[%d]: %s\n", #role.mpFashion, table.concat(role.mpFashion, " "))
+	end
 	
+	desc = desc .. "\n"
 	--print(desc)
 	Log("./result_role.txt", desc)
 end
@@ -334,6 +339,10 @@ function ParseRole( body )
 		role.mpEquip = role.detail["mpEquip"]
 		--物品栏
 		role.ItemList = role.detail["ItemList"]
+		--时装
+		if role.detail["mpFashion"] ~= nil then
+			role.mpFashion = role.detail["mpFashion"]["data"]
+		end
 
 		if SearchRoleFilter(role) == true then
 			DumpFile("./large.txt", large)
