@@ -97,9 +97,7 @@ return:HttpSession
 --]]
 function HttpGet( url, session )
 	local _tmp = {}
-	--cookie = cookie or {}
-	--header = session.header
-	header = table.merge(session.header, session.custom)
+	local header = table.merge(session.header, session.custom)
 	header["Cookie"] = Cookie2String(session.cookie)
 	local context,code,head = http.request{
 			url = url,
@@ -117,14 +115,14 @@ function HttpGet( url, session )
 		_tmp = {}
 		if (head["Cookie"]) then
 			print("Cookie" .. head["Cookie"])
-			cookie = head["Cookie"]
+			session.cookie = head["Cookie"]
 		end
 		if (head["set-cookie"]) then
 			session.cookie = DealCookie(session.cookie, head["set-cookie"])
 		end
 	else
 		print("head = nil")
-		cookie = nil
+		session.cookie = nil
 	end
 
 	--support 303
@@ -137,42 +135,38 @@ function HttpGet( url, session )
 end
 
 
-function HttpPost( url, postdata, cookie )
+function HttpPost( url, postdata, session )
 	local _tmp = {}
-	cookie = cookie or {}
 	postdata = postdata or ""
-	local _headers = {}
-	_headers["Cookie"] = Cookie2String(cookie)
-	_headers["Content-Type"] = "application/x-www-form-urlencoded"
-	_headers["Content-Length"] = string.len(postdata)
+	local header = table.merge(session.header, session.custom)
+	header["Cookie"] = Cookie2String(session.cookie)
+	header["Content-Type"] = "application/x-www-form-urlencoded"
+	header["Content-Length"] = string.len(postdata)
 
 	local context,code,head = http.request({
 			url = url,
 			method = "POST",
-			headers = _headers,
+			headers = header,
 			source = ltn12.source.string(postdata),
 			sink = ltn12.sink.table(_tmp),
 			redirect = false
 		}, postdata)
-	context = table.concat(_tmp, "")
+	session.response = table.concat(_tmp, "")
+	_tmp = nil
+	session.errcode = code
 	--处理cookie
 	if (head) then
 		_tmp = {}
 		if (head["Cookie"]) then
 			print("Cookie" .. head["Cookie"])
-			_cookies = head["Cookie"]
+			session.cookie = head["Cookie"]
 		end
 		if (head["set-cookie"]) then
-			print("set-cookie: " .. head["set-cookie"])
-			DealCookie(cookie, head["set-cookie"])
-			print("after deal: ")
-			for k,v in pairs(cookie) do
-				print(k .. "=" .. v)
-			end
+			session.cookie = DealCookie(session.cookie, head["set-cookie"])
 		end
 	else
-		cookie = nil
+		session.cookie = nil
 	end
 
-	return context,code,cookie
+	return session
 end
