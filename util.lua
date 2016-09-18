@@ -54,3 +54,47 @@ function GetTableItemCount( tb )
 	end
 	return count
 end
+
+function table.print( tb )
+	for k,v in pairs(tb) do
+		print("table key/value: " .. k .. " / " .. v)
+	end
+end
+
+--合并两个table,返回新table
+function table.merge( src, dst )
+	if (src == nil) then
+		return nil
+	end
+	local newt = src
+	if (dst == nil) then
+		return newt
+	end
+
+	for k,v in pairs(dst) do
+		newt[k] = v
+	end
+
+	return newt
+end
+
+function string.trim(s)
+  return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
+--[[
+分割字符串
+--]]
+function string.split(str, delimiter)
+	if str==nil or str=='' or delimiter==nil then
+		return nil
+	end
+	
+    local result = {}
+    for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match)
+    end
+    return result
+end
+
+

@@ -212,8 +212,9 @@ local function adjustheaders(reqt)
     local lower = {
         ["user-agent"] = _M.USERAGENT,
         ["host"] = reqt.host,
-        ["connection"] = "close, TE",
-        ["te"] = "trailers"
+        ["connection"] = "Keep-Alive"
+        --["connection"] = "close, TE"
+        --["te"] = "trailers"
     }
     -- if we have authentication information, pass it along
     if reqt.user and reqt.password then
@@ -222,7 +223,8 @@ local function adjustheaders(reqt)
     end
     -- override with user headers
     for i,v in base.pairs(reqt.headers or lower) do
-        lower[string.lower(i)] = v
+        --lower[string.lower(i)] = v
+        lower[i] = v
     end
     return lower
 end
